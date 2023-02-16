@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "generateMosaic(NJLIC::Image const&amp;, std::__1::vector&lt;NJLIC::Image, std::__1::allocator&lt;NJLIC::Image&gt; &gt; const&amp;, int, int):Mosaic.cpp">
+         <PersistentStrings>
+            <PersistentString
+               value = "similarityScores">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
