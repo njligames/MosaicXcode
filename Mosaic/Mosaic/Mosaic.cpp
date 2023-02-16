@@ -551,10 +551,6 @@ static Image generateMosaic(const Image& targetImage, const vector<Image>& image
 //            }
             mosaicPixels.setPixels(glm::vec2(tileX, tileY), images[bestMatchIndex]);
             
-//            typedef pair<int, int> Indices;
-//            typedef map<Indices, string> MosaicMap;
-//            typedef pair<Indices, string> MosaicMapPair;
-            
             
             
             
