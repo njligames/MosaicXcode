@@ -16,10 +16,8 @@
 #include <map>
 
 using namespace std;
-using namespace NJLIC;
 
 namespace Mosaic {
-
 
 struct ImageData {
     int width;
