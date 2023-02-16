@@ -105,17 +105,24 @@ void Generator::clear() {
     tileImages_.clear();
 }
 
-//Image Generator::tile(const Image& targetImage, const vector<Image>& images)const {
-//    int numThreads = getMaxThreads();
-//    auto t = tileImage(targetImage, images, tileSize_, numThreads);
-//    Image imgData(t);
-//    return imgData;
-//}
-
 }
 
 // Define a global mutex to protect the image map
 static mutex imageMapMutex;
+
+static std::string extractFilename(const std::string& filepath) {
+    // find last '/' or '\' character in filepath
+    size_t pos = filepath.find_last_of("/\\");
+    
+    if (pos != std::string::npos) {
+        // return substring after last '/' or '\' character
+        return filepath.substr(pos + 1);
+    } else {
+        // no '/' or '\' character found, return the whole string
+        return filepath;
+    }
+}
+
 
 // Define a function to calculate the similarity between two images
 static double calculateSimilarity(const Image& target, int image1OffsetX, int image1OffsetY, int image1SizeX, int image1SizeY,
@@ -244,7 +251,7 @@ static Image generateMosaic(const Image& targetImage, const vector<Image>& image
             mosaicPixels.setPixels(glm::vec2(tileX, tileY), images[bestMatchIndex]);
             
             imageMapMutex.lock();
-            mmap.insert(Mosaic::MosaicMapPair(Mosaic::Indices(tileX / tileSize, tileY / tileSize), images[bestMatchIndex].getFilename()));
+            mmap.insert(Mosaic::MosaicMapPair(Mosaic::Indices(tileX / tileSize, tileY / tileSize), extractFilename(images[bestMatchIndex].getFilename())));
             imageMapMutex.unlock();
         }
     };
