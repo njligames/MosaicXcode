@@ -4213,6 +4213,7 @@
 		C1D18E05299D78AD007BAA53 /* Color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Color.h; sourceTree = "<group>"; };
 		C1D18E06299D78BF007BAA53 /* Color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Color.cpp; sourceTree = "<group>"; };
 		C1D18E08299DA286007BAA53 /* stb_image_resize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image_resize.h; sourceTree = "<group>"; };
+		C1D18E0A299EBF0C007BAA53 /* json.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = json.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -4245,6 +4246,7 @@
 		C1760BEB299A8DD900B86717 /* Mosaic */ = {
 			isa = PBXGroup;
 			children = (
+				C1D18E09299EBF0C007BAA53 /* nlohmann */,
 				C1D18E06299D78BF007BAA53 /* Color.cpp */,
 				C1D18E05299D78AD007BAA53 /* Color.h */,
 				C1761654299D20DB00B86717 /* glm */,
@@ -8625,6 +8627,14 @@
 				C1761C61299D20DF00B86717 /* type_aligned.hpp */,
 			);
 			path = gtx;
+			sourceTree = "<group>";
+		};
+		C1D18E09299EBF0C007BAA53 /* nlohmann */ = {
+			isa = PBXGroup;
+			children = (
+				C1D18E0A299EBF0C007BAA53 /* json.hpp */,
+			);
+			path = nlohmann;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

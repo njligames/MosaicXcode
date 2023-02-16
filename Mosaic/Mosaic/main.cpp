@@ -10,8 +10,47 @@
 #include "Mosaic.hpp"
 #include "Image.h"
 
+#include <fstream>
+
 using namespace Mosaic;
 using namespace NJLIC;
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+class ImageFileLoader {
+public:
+    static Image load(const string &filename);
+    static void write(const string &filename, const Image &img);
+};
+
+Image ImageFileLoader::load(const string& filename) {
+    
+    int width, height, channels;
+    unsigned char *data = stbi_load(filename.c_str(), &width, &height, &channels, 0);
+    if (!data) {
+        throw runtime_error("Failed to load image: " + filename);
+    }
+
+    Image image;
+    image.copyData(data, width, height, channels, filename);
+
+    stbi_image_free(data);
+
+    return image;
+}
+
+void ImageFileLoader::write(const string &filename, const Image &img) {
+    stbi_write_png(filename.c_str(),
+                   img.getWidth(),
+                   img.getHeight(),
+                   img.getNumberOfComponents(),
+                   img.getDataPtr(),
+                   img.getNumberOfComponents() * img.getWidth());
+}
 
 static vector<Image> getImages() {
     return {
@@ -2664,6 +2703,25 @@ static vector<Image> getImages() {
         }
 ;
 }
+
+
+static void writeToFile(const std::string& filename, const std::string& data) {
+    // create an ofstream object and open the file for writing
+    std::ofstream outfile(filename);
+    
+    // check if the file is open
+    if (outfile.is_open()) {
+        // write the data to the file
+        outfile << data;
+        
+        // close the file
+        outfile.close();
+    } else {
+        // handle error opening file
+        std::cerr << "Error opening file " << filename << " for writing" << std::endl;
+    }
+}
+
 int main() {
     Generator *mosaic = new Generator();
     mosaic->setTileSize(8);
@@ -2671,16 +2729,35 @@ int main() {
     Image target = ImageFileLoader::load("/Users/jamesfolk/Work/MosaicXcode/Mosaic/Mosaic/input/mona_lisa.jpg");
     vector<Image> images = getImages();
     
-    mosaic->generate(target, images);
-    ImageFileLoader::write("/Users/jamesfolk/Work/MosaicXcode/Mosaic/Mosaic/output/generate.png", mosaic->getMosaicImage());
-    auto mmap = mosaic->getMosaicMap();
-    for(auto iter = mmap.begin(); iter != mmap.end(); iter++) {
-        int tileX = iter->first.first;
-        int tileY = iter->first.second;
-        string filename = iter->second;
+    for(int i = 0; i < images.size(); i++) {
+        ImageData img;
+        img.width = images[i].getWidth();
+        img.height = images[i].getHeight();
+        img.data = (unsigned char*)images[i].getDataPtr();
+        img.components = images[i].getNumberOfComponents();
+        img.id = images[i].getFilename();
         
-        cout << "(" << tileX << ", " << tileY << ") - " << filename << endl;
+        mosaic->addTileImage(img);
     }
+    
+    ImageData imgTarget;
+    imgTarget.width = target.getWidth();
+    imgTarget.height = target.getHeight();
+    imgTarget.data = (unsigned char*)target.getDataPtr();
+    imgTarget.components = target.getNumberOfComponents();
+    imgTarget.id = target.getFilename();
+    
+    mosaic->generate(imgTarget);
+    
+    Image mosaicImage;
+    mosaicImage.copyData(mosaic->getMosaicImage().data, mosaic->getMosaicImage().width, mosaic->getMosaicImage().height, mosaic->getMosaicImage().components, mosaic->getMosaicImage().id);
+    
+    ImageFileLoader::write("/Users/jamesfolk/Work/MosaicXcode/Mosaic/Mosaic/output/generate.png", mosaicImage);
+    
+    
+    string json = mosaic->getMosaicMap();
+    writeToFile("/Users/jamesfolk/Work/MosaicXcode/Mosaic/Mosaic/output/generate.json", json);
+    
     
     delete mosaic;
     
